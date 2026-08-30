@@ -1,0 +1,55 @@
+--- a/src/stringUtils.ts
++++ b/src/stringUtils.ts
+@@ -4,23 +4,32 @@
+ 
+-/**
+- * Formats a full name for display on a user profile page.
+- */
+-export function formatProfileName(firstName: string, lastName: string): string {
+-  const first = firstName.trim().replace(/\s+/g, ' ');
+-  const last = lastName.trim().replace(/\s+/g, ' ');
+-  if (!first && !last) return 'Anonymous';
+-  if (!first) return last;
+-  if (!last) return first;
+-  return `${first} ${last}`;
++/**
++ * Normalises a name component: trims whitespace and collapses internal spaces.
++ */
++function normaliseName(part: string): string {
++  return part.trim().replace(/\s+/g, ' ');
+ }
+ 
+-/**
+- * Formats a full name for display on a printed invoice.
+- * NOTE: duplicates the normalisation logic from formatProfileName.
+- */
+-export function formatInvoiceName(firstName: string, lastName: string): string {
+-  const first = firstName.trim().replace(/\s+/g, ' ');
+-  const last = lastName.trim().replace(/\s+/g, ' ');
+-  if (!first && !last) return 'Anonymous';
+-  if (!first) return last;
+-  if (!last) return first;
+-  return `${first} ${last}`;
++/**
++ * Combines normalised first and last name parts into a display string.
++ */
++function combineName(first: string, last: string): string {
++  if (!first && !last) return 'Anonymous';
++  if (!first) return last;
++  if (!last) return first;
++  return `${first} ${last}`;
++}
++
++/**
++ * Formats a full name for display on a user profile page.
++ */
++export function formatProfileName(firstName: string, lastName: string): string {
++  return combineName(normaliseName(firstName), normaliseName(lastName));
++}
++
++/**
++ * Formats a full name for display on a printed invoice.
++ */
++export function formatInvoiceName(firstName: string, lastName: string): string {
++  return combineName(normaliseName(firstName), normaliseName(lastName));
+ }

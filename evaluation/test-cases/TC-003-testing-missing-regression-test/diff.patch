@@ -1,0 +1,26 @@
+--- a/src/userService.ts
++++ b/src/userService.ts
+@@ -13,6 +13,18 @@ const users = new Map<string, User>();
+ 
++/**
++ * Returns true if the supplied string is a syntactically valid email address.
++ *
++ * Validates: local part, @ symbol, domain with at least one dot.
++ * Does NOT verify deliverability.
++ */
++export function isValidEmail(email: string): boolean {
++  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
++  return pattern.test(email);
++}
++
+ /**
+  * Looks up a user by their email address.
+@@ -28,6 +40,9 @@ export function findUserByEmail(email: string): User | undefined {
+  */
+ export function createUser(id: string, email: string, displayName: string): User {
++  if (!isValidEmail(email)) {
++    throw new Error(`Invalid email address: ${email}`);
++  }
+   if (findUserByEmail(email)) {
+     throw new Error(`Email already registered: ${email}`);
+   }
