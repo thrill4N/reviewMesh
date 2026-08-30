@@ -1,0 +1,11 @@
+--- a/src/calculator.ts
++++ b/src/calculator.ts
+@@ -9,7 +9,7 @@ export function sumArray(values: number[]): number {
+   let total = 0;
+-  // BUG: loop condition uses <= which reads one index past the end of the array,
+-  // producing NaN in the sum when values[values.length] is undefined.
+-  for (let i = 0; i <= values.length; i++) {
++  for (let i = 0; i < values.length; i++) {
+     total += values[i]!;
+   }
+   return total;

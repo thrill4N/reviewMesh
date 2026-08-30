@@ -1,0 +1,23 @@
+--- a/src/orderController.ts
++++ b/src/orderController.ts
+@@ -15,13 +15,15 @@ const orders = new Map<string, Order>();
+ /**
+  * Cancels an order by its ID.
+  *
+- * SECURITY FLAW: no ownership check — any authenticated caller can cancel
+- * any order by supplying its ID, enabling insecure direct object reference (IDOR).
++ * Requires the requesting user's ID so that ownership can be verified before
++ * the cancellation is applied.
+  */
+-export async function cancelOrder(orderId: string): Promise<void> {
++export async function cancelOrder(orderId: string, requestingUserId: string): Promise<void> {
+   const order = orders.get(orderId);
+   if (!order) {
+     throw new Error(`Order ${orderId} not found.`);
+   }
++  if (order.userId !== requestingUserId) {
++    throw new Error(`User ${requestingUserId} is not authorised to cancel order ${orderId}.`);
++  }
+   if (order.status === 'shipped') {
+     throw new Error(`Cannot cancel a shipped order.`);
+   }
